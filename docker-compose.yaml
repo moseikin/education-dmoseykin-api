@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+  mongo:
+    container_name: education-mongo
+    image: mongo:5
+    ports:
+    - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'mongo'
+      MONGO_INITDB_ROOT_PASSWORD: 'mongo3956'
+      MONGO_INITDB_DATABASE: testdb

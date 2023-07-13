@@ -1,0 +1,58 @@
+### Сохранить запись
+POST http://localhost:8099/model
+
+{
+    "id":"1",
+    "method":"save",
+    "params":{
+        "request":{
+            "name":"<name>",
+            "comment":"<comment>"
+        }
+    }
+}
+
+### Получить запись по Id
+POST http://localhost:8099/model
+
+{
+    "id":1,
+    "method":"get",
+    "params":{
+        "id":"<id>"
+    }
+}
+
+### Получить все записи
+POST http://localhost:8099/model
+
+{
+    "id":"1",
+    "method":"getAll"
+    }
+
+### Обновить запись
+POST http://localhost:8099/model
+
+{
+    "id":"1",
+    "method":"update",
+    "params":{
+        "request":{
+            "id":"<id>",
+            "name":"<new name>",
+            "comment":"<new comment>"
+        }
+    }
+}
+
+### Удалить запись по Id
+POST http://localhost:8099/model
+
+{
+    "id":"1",
+    "method":"delete",
+    "params":{
+        "id":"<id>"
+    }
+}

@@ -1,0 +1,9 @@
+server:
+  port: 8099
+spring:
+  data:
+    mongodb:
+#      port: 27018
+#      host: localhost
+#      database: testdb
+      uri: mongodb://mongo:mongo3956@localhost:27018/testdb?authSource=admin
