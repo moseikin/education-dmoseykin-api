@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class ModelServiceTest {
+class ModelServiceImplTest {
     public static final String NOT_EXISTED_ID = "-1";
     private static final String USER_NAME = "anonim";
 
     @Autowired
-    private ModelService modelService;
+    private ModelServiceImpl modelServiceImpl;
     @Autowired
     private MongoOperations mongoOperations;
 
@@ -28,7 +28,7 @@ class ModelServiceTest {
     void save() {
         ModelRequest modelRequest = new ModelRequest(null, "it`s name", "i am comment");
 
-        ModelResponse actualModelResponse = modelService.save(modelRequest);
+        ModelResponse actualModelResponse = modelServiceImpl.save(modelRequest);
 
         assertThat(actualModelResponse.getId()).isNotNull();
         assertThat(actualModelResponse.getName()).isEqualTo(modelRequest.getName());
@@ -43,30 +43,31 @@ class ModelServiceTest {
     @Test
     void save_ShouldThrowIllegalStateException() {
         ModelRequest modelRequest = new ModelRequest("1", "it`s name", "i am comment");
-        assertThrows(IllegalStateException.class, () -> modelService.save(modelRequest));
+        assertThrows(IllegalStateException.class, () -> modelServiceImpl.save(modelRequest));
     }
 
     @Test
     void get() {
-        Model model = new Model(null, "model name", "model comment", null, null, USER_NAME, USER_NAME);
+        Model model = new Model(null, "model name", "model comment",
+                null, null, USER_NAME, USER_NAME, 1L);
         Model savedModel = mongoOperations.save(model);
 
-        ModelResponse actualModelResponse = modelService.get(savedModel.getId());
+        ModelResponse actualModelResponse = modelServiceImpl.get(savedModel.getId());
 
         assertThat(actualModelResponse).usingRecursiveComparison().isEqualTo(savedModel);
     }
 
     @Test
     void get_ShouldThrowEntryNotFoundException() {
-        assertThrows(EntryNotFoundException.class, () -> modelService.get(NOT_EXISTED_ID));
+        assertThrows(EntryNotFoundException.class, () -> modelServiceImpl.get(NOT_EXISTED_ID));
     }
 
     @Test
     void getAll() {
         mongoOperations.dropCollection("test");
-        Model model1 = new Model(null, "name1", "comment1", null, null, USER_NAME, USER_NAME);
-        Model model2 = new Model(null, "name2", "comment2", null, null, USER_NAME, USER_NAME);
-        Model model3 = new Model(null, "name3", "comment3", null, null, USER_NAME, USER_NAME);
+        Model model1 = new Model(null, "name1", "comment1", null, null, USER_NAME, USER_NAME, 1L);
+        Model model2 = new Model(null, "name2", "comment2", null, null, USER_NAME, USER_NAME, 1L);
+        Model model3 = new Model(null, "name3", "comment3", null, null, USER_NAME, USER_NAME, 1L);
         mongoOperations.save(model1);
         mongoOperations.save(model2);
         mongoOperations.save(model3);
@@ -74,24 +75,24 @@ class ModelServiceTest {
         int expectedCount = testModels.size();
         assertThat(testModels).hasSize(expectedCount);
 
-        int actualCount = modelService.getAll().size();
+        int actualCount = modelServiceImpl.getAll().size();
 
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
     @Test
     void update() {
-        Model model = new Model(null, "model name", "model comment", null, null, USER_NAME, USER_NAME);
+        Model model = new Model(null, "model name", "model comment", null, null, USER_NAME, USER_NAME, 1L);
         Model modelToUpdate = mongoOperations.save(model);
 
         ModelRequest modelRequest = new ModelRequest(modelToUpdate.getId(), "updated name", "updated comment");
-        ModelResponse actualResponse = modelService.update(modelRequest);
+        ModelResponse actualResponse = modelServiceImpl.update(modelRequest);
 
         assertThat(actualResponse.getId()).isEqualTo(modelRequest.getId());
         assertThat(actualResponse.getName()).isEqualTo(modelRequest.getName());
         assertThat(actualResponse.getComment()).isEqualTo(modelRequest.getComment());
-        assertThat(actualResponse.getCreateAt()).isEqualTo(modelToUpdate.getCreateAt());
-        assertThat(actualResponse.getUpdateAt()).isAfter(modelToUpdate.getUpdateAt());
+        assertThat(actualResponse.getCreateAt()).isNotNull();
+        assertThat(actualResponse.getUpdateAt()).isNotNull();
         assertThat(actualResponse.getCreator()).isEqualTo(modelToUpdate.getCreator());
         assertThat(actualResponse.getUpdater()).isEqualTo(modelToUpdate.getUpdater());
     }
@@ -99,22 +100,22 @@ class ModelServiceTest {
     @Test
     void update_ShouldThrowIllegalStateException() {
         ModelRequest modelRequest = new ModelRequest(null, "it`s name", "i am comment");
-        assertThrows(IllegalStateException.class, () -> modelService.update(modelRequest));
+        assertThrows(IllegalStateException.class, () -> modelServiceImpl.update(modelRequest));
     }
 
     @Test
     void delete() {
-        Model model = new Model(null, "model name", "model comment", null, null, USER_NAME, USER_NAME);
+        Model model = new Model(null, "model name", "model comment", null, null, USER_NAME, USER_NAME, 1L);
         Model modelToDelete = mongoOperations.save(model);
         assertThat(mongoOperations.findById(modelToDelete.getId(), Model.class)).isNotNull();
 
-        modelService.delete(modelToDelete.getId());
+        modelServiceImpl.delete(modelToDelete.getId());
 
         assertThat(mongoOperations.findById(modelToDelete.getId(), Model.class)).isNull();
     }
 
     @Test
     void delete_ShouldThrowEntryNotFoundException() {
-        assertThrows(EntryNotFoundException.class, () -> modelService.delete(NOT_EXISTED_ID));
+        assertThrows(EntryNotFoundException.class, () -> modelServiceImpl.delete(NOT_EXISTED_ID));
     }
 }

@@ -3,8 +3,6 @@ package com.example.educationdmoseykinapi.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Date;
-
 @Getter
 @RequiredArgsConstructor
 public class ModelResponse {
@@ -15,9 +13,9 @@ public class ModelResponse {
 
     private final String comment;
 
-    private final Date createAt;
+    private final String createAt;
 
-    private final Date updateAt;
+    private final String updateAt;
 
     private final String creator;
 

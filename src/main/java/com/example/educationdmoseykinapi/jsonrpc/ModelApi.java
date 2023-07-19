@@ -1,4 +1,4 @@
-package com.example.educationdmoseykinapi.jsonRPS;
+package com.example.educationdmoseykinapi.jsonrpc;
 
 import com.example.educationdmoseykinapi.model.ModelRequest;
 import com.example.educationdmoseykinapi.model.ModelResponse;

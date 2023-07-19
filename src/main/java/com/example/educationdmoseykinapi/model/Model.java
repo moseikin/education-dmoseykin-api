@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 
 import java.util.Date;
 
@@ -28,4 +29,9 @@ public class Model {
     private String creator;
 
     private String updater;
+
+    // Поле нужно для того, чтобы при откате после неуспешного удаления записи, createAt не становился равным NULL
+    // https://github.com/spring-projects/spring-data-mongodb/issues/1872
+//    @Version
+    private final Long version;
 }
